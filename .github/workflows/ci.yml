@@ -19,7 +19,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Check out tap
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
