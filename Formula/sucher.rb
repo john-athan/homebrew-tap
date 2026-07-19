@@ -7,8 +7,8 @@ class Sucher < Formula
 
   depends_on "rust" => :build
   # Optional-at-runtime, declared here so PDF and video "just work":
-  depends_on "poppler" # PDF pages (pdftocairo / pdfinfo / pdftotext)
   depends_on "ffmpeg"  # video playback (ffmpeg / ffprobe)
+  depends_on "poppler" # PDF pages (pdftocairo / pdfinfo / pdftotext)
 
   def install
     system "cargo", "install", *std_cargo_args

@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # Keep the GitHub Actions used by the CI workflow up to date. This is the
+  # only ecosystem that applies to a Homebrew tap — Dependabot cannot bump
+  # formula versions/urls/sha256, so no other ecosystems are configured.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"

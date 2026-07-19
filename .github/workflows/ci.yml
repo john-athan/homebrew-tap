@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Cancel superseded runs on the same ref to keep CI snappy.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint-audit:
+    name: brew style + audit
+    runs-on: macos-latest
+    steps:
+      - name: Check out tap
+        uses: actions/checkout@v4
+
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      # `brew audit` refuses file-path arguments and needs the repo to be a
+      # registered tap, so link this checkout in as john-athan/homebrew-tap.
+      - name: Register checkout as a tap
+        run: |
+          tap_dir="$(brew --repository)/Library/Taps/john-athan/homebrew-tap"
+          mkdir -p "$(dirname "$tap_dir")"
+          rm -rf "$tap_dir"
+          ln -s "$GITHUB_WORKSPACE" "$tap_dir"
+
+      - name: brew style
+        run: brew style Formula/*.rb
+
+      - name: brew audit
+        run: brew audit --strict --tap john-athan/homebrew-tap --formula
