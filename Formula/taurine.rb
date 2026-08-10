@@ -1,15 +1,15 @@
 class Taurine < Formula
   desc "Keep your Mac awake, with a reason (menu bar caffeine tool)"
   homepage "https://github.com/john-athan/taurine"
-  url "https://github.com/john-athan/taurine/archive/refs/tags/v1.2.0.tar.gz"
-  sha256 "76585d73d5ff8117f3f27365db89e6a40eed85d8892652d1a1eb71652e13e826"
+  url "https://github.com/john-athan/taurine/archive/refs/tags/v1.4.0.tar.gz"
+  sha256 "2df2f5f8d52f0dbfd7feaec3623c27caf4e423253220b3d27219a19560fc0572"
   license "MIT"
 
   depends_on :macos
 
   def install
-    # Builds Taurine.app from source with swiftc (no notarization needed —
-    # a locally built app carries no quarantine flag, so no Gatekeeper prompt).
+    # Builds Taurine.app from source with swiftc. No notarization needed: a
+    # locally built app carries no quarantine flag, so no Gatekeeper prompt.
     system "./build.sh"
     prefix.install "Taurine.app"
     # Put a `taurine` shim on the PATH that runs the bundled binary.
@@ -30,15 +30,24 @@ class Taurine < Formula
       Enable it once from "Charge limit" in the menu; it installs a small root
       daemon and asks for admin once. `taurine batt unlock` is the escape hatch.
 
-      New in 1.2.0: "What is this Mac doing?" opens an activity panel with
-      per-cluster load and frequency, GPU, CPU/GPU/Neural Engine watts, memory
-      and traffic. No password: the watts come from the chip's own energy
-      counters, not from powermetrics. Nothing samples until you open it.
+      "What is this Mac doing?" opens an activity panel with per-cluster load
+      and frequency, GPU, CPU/GPU/Neural Engine watts, memory and traffic. No
+      password: the watts come from the chip's own energy counters, not from
+      powermetrics. Nothing samples until you open it.
 
-      Also new: "Things Apple got wrong", where scroll direction can follow the
-      device (trackpads naturally, wheel mice the traditional way). Off by
-      default; it needs Accessibility permission, and macOS grants that per
-      binary, so it has to be granted again after every upgrade.
+      "Things Apple got wrong" is a shelf of small fixes, all off by default:
+        scroll direction follows the device, not the whole Mac
+        cmd-X / cmd-V cut and paste files in Finder
+        Delete moves files to the Trash
+        Return opens files, cmd-Return renames them
+        shift-cmd-V pastes as plain text in every application
+
+      New in 1.4.0: the last three of those. Only shift-cmd-V needs no
+      permission, because it writes a system preference rather than watching
+      the keyboard, and it is the only one that survives an upgrade untouched.
+      The others need Accessibility, which macOS grants per binary, so after
+      every upgrade remove Taurine from the Accessibility list with the minus
+      button and add it back.
 
       For the "Start at login" toggle, also copy the app to /Applications:
         cp -R #{opt_prefix}/Taurine.app /Applications/
