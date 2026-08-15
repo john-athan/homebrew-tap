@@ -1,8 +1,8 @@
 class Taurine < Formula
   desc "Keep your Mac awake, with a reason (menu bar caffeine tool)"
   homepage "https://github.com/john-athan/taurine"
-  url "https://github.com/john-athan/taurine/archive/refs/tags/v1.4.0.tar.gz"
-  sha256 "2df2f5f8d52f0dbfd7feaec3623c27caf4e423253220b3d27219a19560fc0572"
+  url "https://github.com/john-athan/taurine/archive/refs/tags/v1.5.0.tar.gz"
+  sha256 "75262cb507e538ec8801cc9f28cb8e1dcd54571ec6ca79f4be56784ce75bc019"
   license "MIT"
 
   depends_on :macos
@@ -31,9 +31,9 @@ class Taurine < Formula
       daemon and asks for admin once. `taurine batt unlock` is the escape hatch.
 
       "What is this Mac doing?" opens an activity panel with per-cluster load
-      and frequency, GPU, CPU/GPU/Neural Engine watts, memory and traffic. No
-      password: the watts come from the chip's own energy counters, not from
-      powermetrics. Nothing samples until you open it.
+      and frequency, GPU, CPU/GPU/Neural Engine watts, battery, memory and
+      traffic. No password: the watts come from the chip's own energy counters,
+      not from powermetrics. Nothing samples until you open it.
 
       "Things Apple got wrong" is a shelf of small fixes, all off by default:
         scroll direction follows the device, not the whole Mac
@@ -42,12 +42,17 @@ class Taurine < Formula
         Return opens files, cmd-Return renames them
         shift-cmd-V pastes as plain text in every application
 
-      New in 1.4.0: the last three of those. Only shift-cmd-V needs no
-      permission, because it writes a system preference rather than watching
-      the keyboard, and it is the only one that survives an upgrade untouched.
-      The others need Accessibility, which macOS grants per binary, so after
-      every upgrade remove Taurine from the Accessibility list with the minus
-      button and add it back.
+      New in 1.5.0: the battery tile in that panel. How full the cell is,
+      which way the energy is moving and how fast, how long the gauge thinks
+      that leaves, and what the adapter is delivering against what it is rated
+      for. Read from the battery gauge in the IO registry, never from an
+      undocumented SMC key. A Mac with no battery simply has no battery tile.
+
+      The keyboard fixes need Accessibility, which macOS grants per binary, so
+      after every upgrade remove Taurine from the Accessibility list with the
+      minus button and add it back. shift-cmd-V is the exception: it writes a
+      system preference rather than watching the keyboard, so it survives an
+      upgrade untouched.
 
       For the "Start at login" toggle, also copy the app to /Applications:
         cp -R #{opt_prefix}/Taurine.app /Applications/
