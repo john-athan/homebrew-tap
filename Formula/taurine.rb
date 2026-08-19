@@ -1,8 +1,8 @@
 class Taurine < Formula
   desc "Keep your Mac awake, with a reason (menu bar caffeine tool)"
   homepage "https://github.com/john-athan/taurine"
-  url "https://github.com/john-athan/taurine/archive/refs/tags/v1.5.0.tar.gz"
-  sha256 "75262cb507e538ec8801cc9f28cb8e1dcd54571ec6ca79f4be56784ce75bc019"
+  url "https://github.com/john-athan/taurine/archive/refs/tags/v1.6.0.tar.gz"
+  sha256 "29b323a283aad20287b8cb3b4b892ef6c71ee33c2fb25009007e6efa1e893bff"
   license "MIT"
 
   depends_on :macos
@@ -24,6 +24,7 @@ class Taurine < Formula
     <<~EOS
       Launch the menu bar app:   taurine
       CLI:                       taurine why | on | off | toggle | -- <command>
+      Lock the screen:           taurine lock | lockable on | lockable off
       Charge limit:              taurine batt 80 | batt off | batt
 
       Charge limiting stops charging at a level you pick, to spare the battery.
@@ -42,11 +43,15 @@ class Taurine < Formula
         Return opens files, cmd-Return renames them
         shift-cmd-V pastes as plain text in every application
 
-      New in 1.5.0: the battery tile in that panel. How full the cell is,
-      which way the energy is moving and how fast, how long the gauge thinks
-      that leaves, and what the adapter is delivering against what it is rated
-      for. Read from the battery gauge in the IO registry, never from an
-      undocumented SMC key. A Mac with no battery simply has no battery tile.
+      New in 1.6.0: "Let the screen lock (Mac keeps working)", off by default.
+      Awake meant a lit screen only because Taurine held the display awake, and
+      a display that never goes dark never reaches the idle lock. With the
+      option on, Taurine holds the machine and not the screen, so your Mac
+      locks on its usual schedule while builds, uploads and agents carry on
+      behind the login window. "Lock the screen now" locks immediately without
+      asking anything to sleep. Note that no assertion can refuse a sleep you
+      asked for: the Apple menu, a closed lid and a power button set to sleep
+      still sleep the Mac, so lock with ctrl-cmd-Q or with Taurine instead.
 
       The keyboard fixes need Accessibility, which macOS grants per binary, so
       after every upgrade remove Taurine from the Accessibility list with the
