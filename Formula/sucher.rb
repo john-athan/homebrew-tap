@@ -1,8 +1,8 @@
 class Sucher < Formula
   desc "Fast terminal viewer and browser for markdown, sheets, PDF, images, video"
   homepage "https://github.com/john-athan/sucher"
-  url "https://github.com/john-athan/sucher/archive/refs/tags/v0.7.0.tar.gz"
-  sha256 "72a26644f48f982a047ff46b835b35bbce6fc8beb75bb182dc36c6d16b7876be"
+  url "https://github.com/john-athan/sucher/archive/refs/tags/v0.7.1.tar.gz"
+  sha256 "c4bb36ff9e17a08947faf66999b6f8721520916dd84866fe40f51322232192b2"
   license "MIT"
 
   depends_on "rust" => :build
