@@ -10,7 +10,7 @@ brew install john-athan/tap/<formula>
 
 | Formula | What it is |
 |---|---|
-| [`taurine`](https://github.com/john-athan/taurine) 🐂 | Keep your Mac awake, with a reason — menu bar caffeine tool. |
+| [`taurine`](https://github.com/john-athan/taurine) 🐂 | Keep your Mac awake, with a reason, menu bar caffeine tool. |
 | [`sucher`](https://github.com/john-athan/sucher) | Fast terminal viewer for markdown, spreadsheets, PDF, images, video & docx. |
 
 ```bash
