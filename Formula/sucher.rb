@@ -7,13 +7,28 @@ class Sucher < Formula
 
   depends_on "rust" => :build
   # Both are optional to sucher at runtime, and declared here so the formats
-  # that shell out just work. PDF pages come from the libpdfium the build
-  # embeds; poppler is the fallback for that and still powers pdfinfo/pdftotext.
+  # that shell out just work. PDF pages come from the libpdfium installed below;
+  # poppler is the fallback for that and still powers pdfinfo/pdftotext.
   depends_on "ffmpeg"  # video playback (ffmpeg / ffprobe)
   depends_on "poppler" # PDF fallback (pdftocairo / pdfinfo / pdftotext)
 
   def install
-    system "cargo", "install", *std_cargo_args
+    # `cargo build` rather than `cargo install`, because the build stages a
+    # sidecar library next to the binary and `cargo install` copies only the
+    # binary itself.
+    system "cargo", "build", "--release", "--locked"
+    bin.install "target/release/sucher"
+
+    # sucher loads libpdfium at runtime and deliberately does not carry a copy
+    # inside the executable: macOS charges for the whole image at exec rather
+    # than for the pages that run, so an embedded 7.2 MB library costs ~110 ms
+    # on every start, `sucher note.md` included. build.rs stages the pinned,
+    # checksum-verified library into target/release; install it where
+    # `src/pdfium.rs` looks. Absent (offline builder, upstream outage) sucher
+    # falls back to poppler, so this stays soft rather than failing the build.
+    pdfium = "target/release/libpdfium.dylib"
+    lib.install pdfium if File.exist?(pdfium)
+
     # The binary links its dependencies statically, so it carries their notice
     # requirements wherever it lands. Install the notices next to it rather than
     # leaving them behind in a build directory Homebrew deletes.
