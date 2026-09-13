@@ -6,9 +6,13 @@ class Sucher < Formula
   license "MIT"
 
   depends_on "rust" => :build
-  # Both are optional to sucher at runtime, and declared here so the formats
-  # that shell out just work. PDF pages come from the libpdfium installed below;
-  # poppler is the fallback for that and still powers pdfinfo/pdftotext.
+  # sucher loads these at runtime rather than linking them, so they are declared
+  # here to make every format work out of the box. PDF pages come from the
+  # libpdfium installed below; poppler is the fallback for that and still powers
+  # pdfinfo/pdftotext. duckdb provides the libduckdb that Parquet, JSONL and
+  # DuckDB files are read through (sucher ADR 0022): depending on it beats
+  # shipping a second copy into the same lib prefix this formula owns.
+  depends_on "duckdb"  # data files (libduckdb, loaded at runtime)
   depends_on "ffmpeg"  # video playback (ffmpeg / ffprobe)
   depends_on "poppler" # PDF fallback (pdftocairo / pdfinfo / pdftotext)
 
@@ -24,8 +28,9 @@ class Sucher < Formula
     # than for the pages that run, so an embedded 7.2 MB library costs ~110 ms
     # on every start, `sucher note.md` included. build.rs stages the pinned,
     # checksum-verified library into target/release; install it where
-    # `src/pdfium.rs` looks. Absent (offline builder, upstream outage) sucher
-    # falls back to poppler, so this stays soft rather than failing the build.
+    # `src/pdfium.rs` looks. Unlike libduckdb there is no homebrew-core formula
+    # to depend on. Absent (offline builder, upstream outage) sucher falls back
+    # to poppler, so this stays soft rather than failing the build.
     pdfium = "target/release/libpdfium.dylib"
     lib.install pdfium if File.exist?(pdfium)
 
