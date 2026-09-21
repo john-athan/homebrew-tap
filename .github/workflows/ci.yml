@@ -33,8 +33,13 @@ jobs:
           rm -rf "$tap_dir"
           ln -s "$GITHUB_WORKSPACE" "$tap_dir"
 
+      # FormulaAudit/Text demands `cargo install` for any rust formula. sucher
+      # stages a sidecar library beside its binary during the build and
+      # `cargo install` copies out only the binary, so the formula calls
+      # `cargo build` on purpose and installs both itself. `brew style` reads no
+      # tap-level rubocop config, so the cop is skipped here instead.
       - name: brew style
-        run: brew style Formula/*.rb
+        run: brew style --except-cops FormulaAudit/Text Formula/*.rb
 
       - name: brew audit
         run: brew audit --strict --tap john-athan/homebrew-tap --formula
