@@ -25,11 +25,9 @@ class Taurine < Formula
       Launch the menu bar app:   taurine
       CLI:                       taurine why | on | off | toggle | -- <command>
       Lock the screen:           taurine lock | lockable on | lockable off
-      Charge limit:              taurine batt 80 | batt off | batt
 
-      Charge limiting stops charging at a level you pick, to spare the battery.
-      Enable it once from "Charge limit" in the menu; it installs a small root
-      daemon and asks for admin once. `taurine batt unlock` is the escape hatch.
+      Charge limiting moved into macOS 27 (System Settings > Battery). If an
+      older Taurine installed its charge daemon, remove it from the menu.
 
       "What is this Mac doing?" opens an activity panel with per-cluster load
       and frequency, GPU, CPU/GPU/Neural Engine watts, battery, memory and
