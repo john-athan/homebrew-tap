@@ -9,10 +9,9 @@ class Sucher < Formula
   # sucher loads these at runtime rather than linking them, so they are declared
   # here to make every format work out of the box. PDF pages come from the
   # libpdfium installed below; poppler is the fallback for that and still powers
-  # pdfinfo/pdftotext. duckdb provides the libduckdb that Parquet, JSONL and
-  # DuckDB files are read through (sucher ADR 0022): depending on it beats
-  # shipping a second copy into the same lib prefix this formula owns.
-  depends_on "duckdb"  # data files (libduckdb, loaded at runtime)
+  # pdfinfo/pdftotext. There is deliberately no depends_on "duckdb": Homebrew's
+  # duckdb is 2.x, whose deprecated value accessors return empty cells, so the
+  # pinned 1.x libduckdb is installed into libexec below instead.
   depends_on "ffmpeg"  # video playback (ffmpeg / ffprobe)
   depends_on "poppler" # PDF fallback (pdftocairo / pdfinfo / pdftotext)
 
@@ -33,6 +32,11 @@ class Sucher < Formula
     # to poppler, so this stays soft rather than failing the build.
     pdfium = "target/release/libpdfium.dylib"
     lib.install pdfium if File.exist?(pdfium)
+
+    # Not lib: Homebrew's duckdb links its 2.x libduckdb.dylib there. sucher
+    # looks in libexec beside its resolved binary before any system copy.
+    duckdb = "target/release/libduckdb.dylib"
+    libexec.install duckdb if File.exist?(duckdb)
 
     # The binary links its dependencies statically, so it carries their notice
     # requirements wherever it lands. Install the notices next to it rather than
