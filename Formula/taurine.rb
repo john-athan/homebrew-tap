@@ -1,8 +1,8 @@
 class Taurine < Formula
   desc "Keep your Mac awake, with a reason (menu bar caffeine tool)"
   homepage "https://github.com/john-athan/taurine"
-  url "https://github.com/john-athan/taurine/archive/refs/tags/v1.7.2.tar.gz"
-  sha256 "1e0e31797b3f36d27d639df812f58f164df89ff9b1bf5a22b60c6581f0563422"
+  url "https://github.com/john-athan/taurine/archive/refs/tags/v1.7.3.tar.gz"
+  sha256 "940e40750340e3b873c8f90b944ae4ccebf40ace142a0d16e4e0e8bfbbe16151"
   license "MIT"
 
   depends_on :macos
