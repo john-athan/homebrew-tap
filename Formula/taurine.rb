@@ -11,7 +11,8 @@ class Taurine < Formula
     # Builds Taurine.app from source with swiftc. No notarization needed: a
     # locally built app carries no quarantine flag, so no Gatekeeper prompt.
     system "./build.sh"
-    prefix.install "Taurine.app"
+    # New tags build into build/, old ones at the repo root.
+    prefix.install Dir["{build/,}Taurine.app"].first
     # Put a `taurine` shim on the PATH that runs the bundled binary.
     (bin/"taurine").write <<~SH
       #!/bin/bash

@@ -11,7 +11,7 @@ class Linkrouter < Formula
     # Builds Linkrouter.app from source with swiftc. A locally built app
     # carries no quarantine flag, so there is no Gatekeeper prompt.
     system "./build.sh"
-    prefix.install "build/Linkrouter.app"
+    prefix.install Dir["{build/,}Linkrouter.app"].first
     pkgshare.install "rules.example"
     (bin/"linkrouter").write <<~SH
       #!/bin/bash

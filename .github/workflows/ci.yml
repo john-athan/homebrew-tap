@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   lint-audit:
-    name: brew style + audit
+    name: validate
     runs-on: macos-latest
     steps:
       - name: Check out tap
@@ -24,8 +24,10 @@ jobs:
       - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@ceec4e8419bb3c97ce96e9dda7738499ed5f869d # 2026.11.14.1
 
-      # `brew audit` refuses file-path arguments and needs the repo to be a
-      # registered tap, so link this checkout in as john-athan/homebrew-tap.
+      # tools/validate.sh runs brew style and brew audit. `brew audit` refuses
+      # file-path arguments and needs the repo to be a registered tap, so link
+      # this checkout in as john-athan/homebrew-tap. CI is set on the runner,
+      # which is what makes the script audit.
       - name: Register checkout as a tap
         run: |
           tap_dir="$(brew --repository)/Library/Taps/john-athan/homebrew-tap"
@@ -33,13 +35,5 @@ jobs:
           rm -rf "$tap_dir"
           ln -s "$GITHUB_WORKSPACE" "$tap_dir"
 
-      # FormulaAudit/Text demands `cargo install` for any rust formula. sucher
-      # stages a sidecar library beside its binary during the build and
-      # `cargo install` copies out only the binary, so the formula calls
-      # `cargo build` on purpose and installs both itself. `brew style` reads no
-      # tap-level rubocop config, so the cop is skipped here instead.
-      - name: brew style
-        run: brew style --except-cops FormulaAudit/Text Formula/*.rb
-
-      - name: brew audit
-        run: brew audit --strict --tap john-athan/homebrew-tap --formula
+      - name: Validate
+        run: tools/validate.sh
