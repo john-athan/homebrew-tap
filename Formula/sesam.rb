@@ -1,8 +1,8 @@
 class Sesam < Formula
   desc "One search bar over 1Password, KeePassXC and the Apple Keychain"
   homepage "https://github.com/john-athan/sesam"
-  url "https://github.com/john-athan/sesam/archive/refs/tags/v0.2.0.tar.gz"
-  sha256 "638619a11e295f730af9502389bf838652074add5ad5f81685c245d6100fb944"
+  url "https://github.com/john-athan/sesam/archive/refs/tags/v0.2.1.tar.gz"
+  sha256 "d7edee792863d083c76083ae28c01b5f7effbd841ebb6847ec5954ed45d1feaf"
   license "MIT"
 
   depends_on :macos
