@@ -1,8 +1,8 @@
 class Linkrouter < Formula
   desc "Default browser that picks the browser and profile by the folder you clicked in"
   homepage "https://github.com/john-athan/linkrouter"
-  url "https://github.com/john-athan/linkrouter/archive/refs/tags/v1.0.0.tar.gz"
-  sha256 "90f3a36cab6c5a676cccc145e3a22ad2f11ba4cf1e54cb7bf6b90a4e78235818"
+  url "https://github.com/john-athan/linkrouter/archive/refs/tags/v1.0.1.tar.gz"
+  sha256 "9f4e2d6ed50c6668981cab2f52eee07c42d7b45dfb14ef9e86b595780cb6b7c1"
   license "MIT"
 
   depends_on :macos
