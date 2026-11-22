@@ -22,17 +22,20 @@ class Linkrouter < Formula
 
   def caveats
     <<~EOS
-      Linkrouter has to live outside the Cellar, because the default browser
+      Linkrouter has to live in /Applications, because the default browser
       and the Accessibility grant are both tied to where the app is:
 
-        cp -R #{opt_prefix}/Linkrouter.app ~/Applications/
+        cp -R #{opt_prefix}/Linkrouter.app /Applications/
         mkdir -p ~/.config/linkrouter && cp -n #{opt_pkgshare}/rules.example ~/.config/linkrouter/rules
-        ~/Applications/Linkrouter.app/Contents/MacOS/linkrouter --set-default
+        /Applications/Linkrouter.app/Contents/MacOS/linkrouter --set-default
 
       Then edit ~/.config/linkrouter/rules, open a link once, and allow
       Linkrouter under System Settings > Privacy & Security > Accessibility.
       After every upgrade, copy the app again, remove Linkrouter from the
       Accessibility list with the minus button, and allow it again.
+
+      Upgrading from 1.0.0: remove ~/Applications/Linkrouter.app. The
+      default browser follows the copy in /Applications.
 
       Which rule a folder gets:  linkrouter --which ~/some/folder
     EOS
