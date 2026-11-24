@@ -1,8 +1,8 @@
 class Linkrouter < Formula
   desc "Default browser that picks the browser and profile by the folder you clicked in"
   homepage "https://github.com/john-athan/linkrouter"
-  url "https://github.com/john-athan/linkrouter/archive/refs/tags/v1.0.2.tar.gz"
-  sha256 "4223f46fbdabbbaa129077ec256a0774de2b5178f34e3eaad1939c5cbd6cd476"
+  url "https://github.com/john-athan/linkrouter/archive/refs/tags/v1.0.3.tar.gz"
+  sha256 "4e34cf7dba58eda801fc9347e0f774198e38e6ecec12359ada377a5a76a0d3b4"
   license "MIT"
 
   depends_on :macos
@@ -15,9 +15,19 @@ class Linkrouter < Formula
     pkgshare.install "rules.example"
     (bin/"linkrouter").write <<~SH
       #!/bin/bash
-      exec "#{prefix}/Linkrouter.app/Contents/MacOS/linkrouter" "$@"
+      app="/Applications/Linkrouter.app"
+      [ -d "$app" ] || app="#{prefix}/Linkrouter.app"
+      exec "$app/Contents/MacOS/linkrouter" "$@"
     SH
     (bin/"linkrouter").chmod 0755
+    # Copies the app to /Applications and signs it with a certificate made on
+    # this Mac, so macOS permissions survive an upgrade.
+    libexec.install "tools/install-app.sh", "tools/sign-app.sh"
+    (bin/"linkrouter-install").write <<~SH
+      #!/bin/bash
+      exec "#{libexec}/install-app.sh" "#{prefix}/Linkrouter.app" "$@"
+    SH
+    (bin/"linkrouter-install").chmod 0755
   end
 
   def caveats
@@ -25,14 +35,13 @@ class Linkrouter < Formula
       Linkrouter has to live in /Applications, because the default browser
       and the Accessibility grant are both tied to where the app is:
 
-        cp -R #{opt_prefix}/Linkrouter.app /Applications/
+        linkrouter-install
         mkdir -p ~/.config/linkrouter && cp -n #{opt_pkgshare}/rules.example ~/.config/linkrouter/rules
         /Applications/Linkrouter.app/Contents/MacOS/linkrouter --set-default
 
       Then edit ~/.config/linkrouter/rules, open a link once, and allow
       Linkrouter under System Settings > Privacy & Security > Accessibility.
-      After every upgrade, copy the app again, remove Linkrouter from the
-      Accessibility list with the minus button, and allow it again.
+      After every upgrade, run linkrouter-install again. The permission stays.
 
       Upgrading from 1.0.0: remove ~/Applications/Linkrouter.app. The
       default browser follows the copy in /Applications.
