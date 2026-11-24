@@ -1,8 +1,8 @@
 class Sesam < Formula
   desc "One search bar over 1Password, KeePassXC and the Apple Keychain"
   homepage "https://github.com/john-athan/sesam"
-  url "https://github.com/john-athan/sesam/archive/refs/tags/v0.2.1.tar.gz"
-  sha256 "d7edee792863d083c76083ae28c01b5f7effbd841ebb6847ec5954ed45d1feaf"
+  url "https://github.com/john-athan/sesam/archive/refs/tags/v0.2.2.tar.gz"
+  sha256 "9f6eb2ff7ad4b8e4f9b95add854b5abb22d17453645d72e4e7a84324ce2a133d"
   license "MIT"
 
   depends_on :macos
@@ -15,9 +15,19 @@ class Sesam < Formula
     # Put a `sesam` shim on the PATH that runs the bundled binary.
     (bin/"sesam").write <<~SH
       #!/bin/bash
-      exec "#{prefix}/Sesam.app/Contents/MacOS/sesam" "$@"
+      app="/Applications/Sesam.app"
+      [ -d "$app" ] || app="#{prefix}/Sesam.app"
+      exec "$app/Contents/MacOS/sesam" "$@"
     SH
     (bin/"sesam").chmod 0755
+    # Copies the app to /Applications and signs it with a certificate made on
+    # this Mac, so macOS permissions survive an upgrade.
+    libexec.install "tools/install-app.sh", "tools/sign-app.sh"
+    (bin/"sesam-install").write <<~SH
+      #!/bin/bash
+      exec "#{libexec}/install-app.sh" "#{prefix}/Sesam.app" "$@"
+    SH
+    (bin/"sesam-install").chmod 0755
   end
 
   def caveats
@@ -28,7 +38,8 @@ class Sesam < Formula
 
       Sesam has to live in /Applications for "Launch at login", and without
       that the hotkey is gone after the next restart:
-        cp -R #{opt_prefix}/Sesam.app /Applications/
+        sesam-install
+      Run it again after every upgrade.
 
       The vaults are separate programs, installed separately and optional:
         1Password   brew install 1password-cli, then "Integrate with
@@ -37,8 +48,7 @@ class Sesam < Formula
       The Apple Keychain works without either.
 
       Enter pastes into the app you came from, which needs Accessibility.
-      macOS grants it per binary, so after every upgrade remove Sesam from
-      the Accessibility list with the minus button and allow it again.
+      Installed with sesam-install, the permission survives upgrades.
       Copying (cmd-C) needs no permission at all.
     EOS
   end
