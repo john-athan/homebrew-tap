@@ -1,8 +1,8 @@
 class Taurine < Formula
   desc "Keep your Mac awake, with a reason (menu bar caffeine tool)"
   homepage "https://github.com/john-athan/taurine"
-  url "https://github.com/john-athan/taurine/archive/refs/tags/v1.7.4.tar.gz"
-  sha256 "fdbf69d9a4430da7b7d2068e3f9399c97f0e4a1b648e6743520b8654e4b9424f"
+  url "https://github.com/john-athan/taurine/archive/refs/tags/v1.7.5.tar.gz"
+  sha256 "244aef96d570d809b8b837c849f726e7b379b1e6fdd23e00de5ec7bb9d65f235"
   license "MIT"
 
   depends_on :macos
@@ -16,9 +16,19 @@ class Taurine < Formula
     # Put a `taurine` shim on the PATH that runs the bundled binary.
     (bin/"taurine").write <<~SH
       #!/bin/bash
-      exec "#{prefix}/Taurine.app/Contents/MacOS/taurine" "$@"
+      app="/Applications/Taurine.app"
+      [ -d "$app" ] || app="#{prefix}/Taurine.app"
+      exec "$app/Contents/MacOS/taurine" "$@"
     SH
     (bin/"taurine").chmod 0755
+    # Copies the app to /Applications and signs it with a certificate made on
+    # this Mac, so macOS permissions survive an upgrade.
+    libexec.install "tools/install-app.sh", "tools/sign-app.sh"
+    (bin/"taurine-install").write <<~SH
+      #!/bin/bash
+      exec "#{libexec}/install-app.sh" "#{prefix}/Taurine.app" "$@"
+    SH
+    (bin/"taurine-install").chmod 0755
   end
 
   def caveats
@@ -52,14 +62,10 @@ class Taurine < Formula
       asked for: the Apple menu, a closed lid and a power button set to sleep
       still sleep the Mac, so lock with ctrl-cmd-Q or with Taurine instead.
 
-      The keyboard fixes need Accessibility, which macOS grants per binary, so
-      after every upgrade remove Taurine from the Accessibility list with the
-      minus button and add it back. shift-cmd-V is the exception: it writes a
-      system preference rather than watching the keyboard, so it survives an
-      upgrade untouched.
-
-      For the "Start at login" toggle, also copy the app to /Applications:
-        cp -R #{opt_prefix}/Taurine.app /Applications/
+      The keyboard fixes need Accessibility. For that permission to survive
+      upgrades, and for the "Start at login" toggle, install the app into
+      /Applications, again after every upgrade:
+        taurine-install
     EOS
   end
 
